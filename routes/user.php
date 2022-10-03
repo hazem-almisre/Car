@@ -23,7 +23,6 @@ Route::group(['namespace'=>'user/auth'],function () {
 });
 
 Route::group(['namespace'=>'user','prefix'=>'user','middleware'=>'auth:user'],function () {
-
     //like
     Route::get('/like/show',[Like::class,'Like@index']);
     Route::post('/like/add',[Like::class,'Like@store']);
