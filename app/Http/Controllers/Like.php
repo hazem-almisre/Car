@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Like as ModelsLike;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
+class Like extends Controller
+{
+
+    public function index()
+    {
+        $user=Auth::id();
+        if($user)
+        {
+        $lieks=ModelsLike::query()->where('user_id','=',$user)->get();
+        return response()->json(['data'=>$lieks,'message'=>'sucssful'],200);
+        }
+        else
+        return response()->json(['data'=>null,'message'=>'fault']);
+    }
+
+
+    public function store(Request $request)
+    {
+        $vaildation=Validator::make($request->all(),[
+            'user_id'=>['required','integer'],
+            'car_id'=>['required','integer'],
+        ]);
+        if($vaildation->fails())
+        {
+            return response()->json(['message'=>"fault","error"=>$vaildation->errors()]);
+        }
+        $id=Auth::id();
+        if(!$id || $id!=$request->user_id){
+            return response()->json(['message'=>'fault','error'=>"you are not auth"]);
+        }
+
+        ModelsLike::query()->create([
+            'user_id'=>$id,
+            'car_id'=>$request->car_id
+        ]);
+        return response()->json(['message'=>'sucssful']);
+    }
+
+
+
+    public function destroy(int $id)
+    {
+        if($id<0)
+        {
+            return response()->json(['message'=>'fault','eroor'=>"the 'id' is not true"]);
+        }
+        $like=ModelsLike::query()->find($id);
+        if(!$like)
+        {
+            return response()->json(['message'=>'fault','eroor'=>"not found like"]);
+        }
+        $user_id=Auth::id();
+        if(!$user_id || $user_id!=$like->user_id){
+            return response()->json(['message'=>'fault','error'=>"you are not auth"]);
+        }
+
+        try {
+            $like->delete();
+        } catch (\Throwable $th) {
+            return response()->json(['message'=>'fault','error'=>$th->getMessage()],500);
+        }
+
+        return response()->json(['message'=>'sucssful']);
+
+    }
+}
