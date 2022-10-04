@@ -49,7 +49,12 @@ class CarController extends Controller
     public function idSearchCar($id)
     {
         //
-        return Car::where("id","=",$id)->get();
+        return Car::where("id","=",$id)->with('iamages')->with('carName',function($var){
+            $var->select('id','name');
+        })->with('vendor',function($var){
+
+            $var->select('id','first_name','last_name');
+        })->get();
     }
 
 
@@ -64,7 +69,10 @@ class CarController extends Controller
         )->with('carName',function($var){
 
             $var->select('id','name');
-        })->get();
+        })->with('vendor',function($var){
+
+            $var->select('id','first_name','last_name');
+        })->with('iamages')->get();
     }
 
     public function modelSearchCar($model)
@@ -76,7 +84,7 @@ class CarController extends Controller
         })->with('vendor',function($var){
 
             $var->select('id','first_name','last_name');
-        })->get();
+        })->with('iamages')->get();
     }
 
     public function colorSearchCar($color)
@@ -88,7 +96,7 @@ class CarController extends Controller
         })->with('vendor',function($var){
 
             $var->select('id','first_name','last_name');
-        })->get();
+        })->with('iamages')->get();
     }
 
     public function descriptionSearchCar($description)
@@ -100,7 +108,7 @@ class CarController extends Controller
         })->with('vendor',function($var){
 
             $var->select('id','first_name','last_name');
-        })->get();
+        })->with('iamages')->get();
     }
 
 }
