@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator ;
 
 class Signin extends Controller
 {
-    public function signin($request)
+    public function signin(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string',
@@ -18,10 +18,8 @@ class Signin extends Controller
             'email' => 'required|email|string|unique:users,email',
             'password' => 'required|string',
             'confirm_password' => 'required|same:password',
-            "phone_number" => 'required|string|unique:users,phone_number'
-        ], [
-            'name.required' => 'you do not have name '
-        ]);
+            "phone" => 'required|string|unique:users,phone'
+        ], );
         if ($validator->fails()) {
             return response()->json([
                 'error'=>$validator->errors()

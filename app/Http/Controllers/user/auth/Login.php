@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class Login extends Controller
 {
-    public function login($request)
+    public function login(Request $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $input = $request->all();
