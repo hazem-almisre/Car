@@ -23,7 +23,7 @@ class CarController extends Controller
             "name" => "required|string",
             "model" => ['required','date:Y'],
             "color" => "required|string",
-            "description" => "string",
+            "description" => "string|required",
             "images.*"=>"image",
             "vendor_id"    => "required | integer",
             ]);
@@ -64,7 +64,7 @@ class CarController extends Controller
             return response()->json(
                 [
                     "message" => "All cars data are Validated and saved",
-                    "data :" => new CarResource($car)
+                    "data" => new CarResource($car)
                 ],
                 200
             );
@@ -100,7 +100,7 @@ class CarController extends Controller
             "name" => "required|string",
             "model" => ['required','date'],
             "color" => "required|string",
-            "description" => "string",
+            "description" => "string|required",
             "images.*"=>"image",
             "vendor_id" => "required | integer",
             ]);
@@ -139,7 +139,7 @@ class CarController extends Controller
             return response()->json(
                 [
                     "message" => "All cars data are Validated and saved",
-                    "data :" => new CarResource($car)
+                    "data" => new CarResource($car)
                 ],
                 200
             );
