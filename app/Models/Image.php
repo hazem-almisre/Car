@@ -10,10 +10,14 @@ class Image extends Model
     use HasFactory;
 
     protected $fillable = [
-
+        'id',
         'image_url',
         'car_id',
 
+    ];
+
+    protected $hidden =[
+        'car_id',
     ];
 
     public function car()

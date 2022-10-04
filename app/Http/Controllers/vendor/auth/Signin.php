@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Validator ;
 
 class Signin extends Controller
 {
-    public function signin($request)
+    public function signin(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'required|email|string|unique:users,email',
+            'email' => 'required|email|string|unique:vendors,email',
             'password' => 'required|string',
             'confirm_password' => 'required|same:password',
-            "phone_number" => 'required|string|unique:users,phone_number'
+            "phone" => 'required|string|unique:vendors,phone'
         ], [
             'name.required' => 'you do not have name '
         ]);

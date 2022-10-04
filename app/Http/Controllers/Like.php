@@ -15,7 +15,10 @@ class Like extends Controller
         $user=Auth::id();
         if($user)
         {
-        $lieks=ModelsLike::query()->where('user_id','=',$user)->get();
+
+        $lieks=ModelsLike::query()->where('user_id','=',$user)->with(['user' => function ($query) {
+            $query->select('id', 'first_name','last_name');
+        }])->with('car')->get();
         return response()->json(['data'=>$lieks,'message'=>'sucssful'],200);
         }
         else

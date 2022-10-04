@@ -23,11 +23,11 @@ Route::group(['namespace'=>'user/auth'],function () {
     Route::post('/login',[Login::class,'login']);
 });
 
-Route::group(['namespace'=>'user','prefix'=>'user','middleware'=>'auth:user'],function () {
+Route::group(['namespace'=>'user','middleware'=>'auth:user'],function () {
     //like
-    Route::get('/like/show',[Like::class,'Like@index']);
-    Route::post('/like/add',[Like::class,'Like@store']);
-    Route::post('/like/delete',[Like::class,'Like@destroy']);
+    Route::get('/like/show',[Like::class,'index']);
+    Route::post('/like/add',[Like::class,'store']);
+    Route::post('/like/delete/{id}',[Like::class,'destroy']);
 
 Route::get('/cars/search/id/{id}', [CarController::class, 'idSearchCar']);
 Route::get('/cars/search/name/{name}', [CarController::class, 'nameSearchCar']);

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\user\CarController;
+use App\Http\Controllers\vendor\CarController;
 use App\Http\Controllers\vendor\auth\Login;
 use App\Http\Controllers\vendor\auth\Signin;
 use Illuminate\Http\Request;

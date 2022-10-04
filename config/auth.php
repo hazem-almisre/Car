@@ -2,6 +2,8 @@
 
 
 
+
+
 return [
 
     /*
@@ -77,7 +79,7 @@ return [
 
         'vendor' => [
             'driver' => 'eloquent',
-            'table' => App\Models\Vendor::class,
+            'model' => App\Models\Vendor::class,
         ],
     ],
 

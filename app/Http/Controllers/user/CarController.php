@@ -16,6 +16,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+
+
 class CarController extends Controller
 {
 
@@ -25,7 +27,13 @@ class CarController extends Controller
         //$input = Car::query()->get();
         //return response()->json($input,Response::HTTP_OK);
 
-        $cars = Car::paginate(8);
+        $cars = Car::query()->with('carName',function($var){
+
+            $var->select('id','name');
+        })->with('vendor',function($var){
+
+            $var->select('id','first_name','last_name');
+        })->paginate(8);
 
 
         return response()->json(
@@ -41,31 +49,58 @@ class CarController extends Controller
     public function idSearchCar($id)
     {
         //
-        return Car::where("id","like","%".$id."%")->get();
+        return Car::where("id","=",$id)->get();
     }
+
 
     public function nameSearchCar($name)
     {
-        //
-        return Car::where("name", "like", "%" . $name . "%")->get();
+        //update
+        $GLOBALS['name']=$name;
+        return Car::query()->whereHas('carName',function($var){
+
+            $var->where("name", "like", "%" .  $GLOBALS['name'] . "%");
+        }
+        )->with('carName',function($var){
+
+            $var->select('id','name');
+        })->get();
     }
 
     public function modelSearchCar($model)
     {
         //
-        return Car::where("model", "like", "%" . $model . "%")->get();
+        return Car::where("model", "like", "%" . $model . "%")->with('carName',function($var){
+
+            $var->select('id','name');
+        })->with('vendor',function($var){
+
+            $var->select('id','first_name','last_name');
+        })->get();
     }
 
     public function colorSearchCar($color)
     {
         //
-        return Car::where("color", "like", "%" . $color . "%")->get();
+        return Car::where("color", "like", "%" . $color . "%")->with('carName',function($var){
+
+            $var->select('id','name');
+        })->with('vendor',function($var){
+
+            $var->select('id','first_name','last_name');
+        })->get();
     }
 
     public function descriptionSearchCar($description)
     {
         //
-        return Car::where("description", "like", "%" . $description . "%")->get();
+        return Car::where("description", "like", "%" . $description . "%")->with('carName',function($var){
+
+            $var->select('id','name');
+        })->with('vendor',function($var){
+
+            $var->select('id','first_name','last_name');
+        })->get();
     }
 
 }

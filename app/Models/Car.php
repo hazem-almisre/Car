@@ -27,6 +27,11 @@ class Car extends Model
         'vendor_id',
     ];
 
+    protected $hidden =[
+        'name_id',
+        'vendor_id'
+    ];
+
     public function likes()
     {
         return $this->hasMany(Like::class, 'car_id', 'id');

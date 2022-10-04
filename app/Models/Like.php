@@ -18,12 +18,14 @@ class Like extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
+    protected $hidden = [
 
         'user_id',
         'car_id',
 
     ];
+
+
 
     /**
      * Get the user that owns the Like

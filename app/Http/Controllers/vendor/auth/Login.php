@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class Login extends Controller
 {
-    public function login($request)
+    public function login(Request $request)
     {
         if($request->email)
         $vendor = Vendor::query()->where('email', $request->email)->first();

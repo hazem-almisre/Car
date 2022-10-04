@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 
-class Vendor extends Model
+class Vendor extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -19,7 +19,6 @@ class Vendor extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-
         'first_name',
         'last_name',
         'phone',
