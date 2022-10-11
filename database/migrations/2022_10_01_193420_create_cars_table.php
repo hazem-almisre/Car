@@ -29,7 +29,7 @@ return new class extends Migration
             ->on('car_names');
 
 
-            $table->timestamps();
+
         });
 
 

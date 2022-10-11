@@ -23,17 +23,25 @@ Route::group(['namespace'=>'user/auth'],function () {
     Route::post('/login',[Login::class,'login']);
 });
 
-Route::group(['namespace'=>'user','middleware'=>'auth:user'],function () {
-    //like
-    Route::get('/like/show',[Like::class,'index']);
-    Route::post('/like/add',[Like::class,'store']);
-    Route::post('/like/delete/{id}',[Like::class,'destroy']);
 
-Route::get('/cars/search/id/{id}', [CarController::class, 'idSearchCar']);
-Route::get('/cars/search/name/{name}', [CarController::class, 'nameSearchCar']);
-Route::get('/cars/search/model/{model}', [CarController::class, 'modelSearchCar']);
-Route::get('/cars/search/color/{color}', [CarController::class, 'colorSearchCar']);
-Route::get('/cars/search/description/{description}', [CarController::class, 'descriptionSearchCar']);
-Route::get('/cars',[CarController::class,'index']);
+try {
 
-});
+    Route::group(['namespace'=>'user','middleware'=>'auth:user'],function () {
+        //like
+        Route::get('/like/show',[Like::class,'index']);
+        Route::post('/like/add',[Like::class,'store']);
+        Route::post('/like/delete/{id}',[Like::class,'destroy']);
+
+    Route::get('/cars/search/id/{id}', [CarController::class, 'idSearchCar']);
+    Route::get('/cars/search/name/{name}', [CarController::class, 'nameSearchCar']);
+    Route::get('/cars/search/model/{model}', [CarController::class, 'modelSearchCar']);
+    Route::get('/cars/search/color/{color}', [CarController::class, 'colorSearchCar']);
+    Route::get('/cars/search/description/{description}', [CarController::class, 'descriptionSearchCar']);
+    Route::get('/cars',[CarController::class,'index']);
+
+    });
+
+
+} catch (\Throwable $th) {
+    return response()->json(['error'=>$th->getMessage()]);
+}

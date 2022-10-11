@@ -4,34 +4,31 @@ namespace App\Http\Controllers\vendor;
 
 use App\Models\Car;
 use App\Models\Image;
+use App\Models\CarName;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CarResource;
 use App\Http\Controllers\Controller;
-use App\Models\CarName;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CarController extends Controller
 {
     public function carStore(Request $request)
     {
-
-
         $validator = Validator::make($request->all(), [
-
             "name" => "required|string",
-            "model" => ['required','date:Y'],
+            "model" => ['required','date'],
             "color" => "required|string",
             "description" => "string|required",
-            "images.*"=>"image",
-            "vendor_id"    => "required | integer",
+            "images.*"=>"image|required",
+            "vendor_id" => "required | integer",
             ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
-
 
         $image_url=[];
         for ($i=0;$i<count($request->images);$i++) {
@@ -44,6 +41,12 @@ class CarController extends Controller
         $request->model=date_format($c,'Y');
 
         $name_car=CarName::query()->where('name',$request->name)->first();
+
+        if(Auth::guard('vendor')->id()!=$request->vendor_id)
+        return response()->json(['error'=>'the vendor is not match with person has auth']);
+
+        if(!$name_car)
+        return response()->json(['error'=>"the name car do not find","message"=>'fault']);
         $car = new Car;
         $car->name_id = $name_car->id;
         $car->model = $request->model;
@@ -80,7 +83,9 @@ class CarController extends Controller
             $var->select('id','first_name','last_name');
          })->with('carName',function($var){
             $var->select('id','name');
-        })->findOrFail($id);
+        })->find($id);
+        if(!$car)
+        return response()->json(['error'=>'the car not found','message'=>'fault']);
         $image = Image::query()->select('image_url')->where('car_id',$id)->get();
         $car['image']=$image;
 
@@ -90,6 +95,7 @@ class CarController extends Controller
                 "data :" =>new CarResource($car)
                     ],
             200);
+
         }
 
 
@@ -101,13 +107,22 @@ class CarController extends Controller
             "model" => ['required','date'],
             "color" => "required|string",
             "description" => "string|required",
-            "images.*"=>"image",
-            "vendor_id" => "required | integer",
+            "images.*"=>"image|required",
+            "vendor_id" => "required|integer",
             ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
+
+        $car = Car::query()->findOrFail($id);
+        $images=$car->iamages;
+        foreach ($images as $value) {
+            if (!is_null($value->image_url) )
+            unlink($value->image_url);
+        }
+        Image::query()->where('car_id','=',$id)->delete();
+
         $image_url=[];
         for ($i=0;$i<count($request->images);$i++) {
             $image_name =  $request->images[$i]->getClientOriginalName();
@@ -118,8 +133,12 @@ class CarController extends Controller
         $c=date_create($request->model);
         $request->model=date_format($c,'Y');
 
+        if(Auth::guard('vendor')->id()!=$request->vendor_id)
+        return response()->json(['error'=>'the vendor is not match with person has auth']);
+
         $name_car=CarName::query()->where('name',$request->name)->first();
-        $car = Car::query()->findOrFail($id);
+        if(!$name_car)
+        return "name car do not find";
         $car->name_id = $name_car->id;
         $car->model = $request->model;
         $car->color = $request->color;
@@ -144,10 +163,14 @@ class CarController extends Controller
                 200
             );
         }
+        else{
+            return response()->json(['error'=>'car data not save in DB','message'=>'fault']);
+        }
         }
     public function destroy($id)
     {
-        //
+
+        Auth::guard('vendor');
         $car = Car::findOrFail($id);
         $images=$car->iamages;
         foreach ($images as $value) {
@@ -163,7 +186,13 @@ class CarController extends Controller
                 200
             );
         } else {
-            return "the car hasn't been deleted";
+            return response()->json(
+                [
+                    "message" => "fault",
+                    "error :" => "the car hasn't been deleted"
+                ],
+                200
+            );
         }
     }
 

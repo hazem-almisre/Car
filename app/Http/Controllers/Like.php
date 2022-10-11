@@ -15,14 +15,16 @@ class Like extends Controller
         $user=Auth::id();
         if($user)
         {
-
         $lieks=ModelsLike::query()->where('user_id','=',$user)->with(['user' => function ($query) {
             $query->select('id', 'first_name','last_name');
         }])->with('car')->get();
+        if($lieks)
         return response()->json(['data'=>$lieks,'message'=>'sucssful'],200);
+        else
+        return response()->json(['data'=>null,'message'=>'fult']);
         }
         else
-        return response()->json(['data'=>null,'message'=>'fault']);
+        return response()->json(['error'=>'you are not auth','message'=>'fault']);
     }
 
 
@@ -32,15 +34,17 @@ class Like extends Controller
             'user_id'=>['required','integer'],
             'car_id'=>['required','integer'],
         ]);
+
+
         if($vaildation->fails())
         {
             return response()->json(['message'=>"fault","error"=>$vaildation->errors()]);
         }
+
         $id=Auth::id();
-        if(!$id || $id!=$request->user_id){
+        if(!$id){
             return response()->json(['message'=>'fault','error'=>"you are not auth"]);
         }
-
         ModelsLike::query()->create([
             'user_id'=>$id,
             'car_id'=>$request->car_id
@@ -50,8 +54,15 @@ class Like extends Controller
 
 
 
-    public function destroy(int $id)
+    public function destroy(int $id,Request $request)
     {
+        $vaildation=Validator::make($request->all(),[
+            'like_id'=>['required','integer'],
+        ]);
+        if($vaildation->fails())
+        {
+            return response()->json(['message'=>"fault","error"=>$vaildation->errors()]);
+        }
         if($id<0)
         {
             return response()->json(['message'=>'fault','eroor'=>"the 'id' is not true"]);
@@ -69,7 +80,7 @@ class Like extends Controller
         try {
             $like->delete();
         } catch (\Throwable $th) {
-            return response()->json(['message'=>'fault','error'=>$th->getMessage()],500);
+            return response()->json(['message'=>'fault','error'=>$th->getMessage()],300);
         }
 
         return response()->json(['message'=>'sucssful']);

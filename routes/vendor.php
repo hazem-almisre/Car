@@ -11,10 +11,15 @@ Route::group(['namespace'=>'vendor'],function () {
     Route::post('/login',[Login::class,'login']);
 });
 
-Route::group(['namespace'=>'vendor','middleware'=>'auth:vendor'],function () {
+try {
+    Route::group(['namespace'=>'vendor','middleware'=>'auth:vendor'],function () {
 
-Route::post('/car',[CarController::class,'carStore']);
-Route::get('/cars/{id}',[CarController::class,'carShow']);
-Route::put('/cars/{id}',[CarController::class,'update']);
-Route::delete('/cars/{id}',[CarController::class,'destroy']);
-});
+        Route::post('/carstore',[CarController::class,'carStore']);
+        Route::get('/cars/{id}',[CarController::class,'carShow']);
+        Route::post('/carsu/{id}',[CarController::class,'update']);
+        Route::post('/carsd/{id}',[CarController::class,'destroy']);
+        });
+
+} catch (Exception  $th) {
+    return response()->json(['error'=>$th->getMessage()]);
+}
