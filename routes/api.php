@@ -19,6 +19,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/l',function()
+{
+    return response()->json(['error'=>'you are not auth','message'=>'fault']);
+})->name('login');
+
 
 
 

@@ -28,33 +28,41 @@ class CarController extends Controller
         //return response()->json($input,Response::HTTP_OK);
 
         $cars = Car::query()->with('carName',function($var){
-
-            $var->select('id','name');
+            $var->get('name');
         })->with('vendor',function($var){
-
             $var->select('id','first_name','last_name');
-        })->paginate(8);
+        })->with('iamages')->paginate(2);
 
-
+        if($cars)
         return response()->json(
             [
                 "message" => "All Cars data ",
-                "data :" => CarResource::collection($cars)
+                "data" => $cars
             ],
             200
         );
+        else
+        {
+            return response()->json(['error'=>'find error in get cars','message'=>'fault']);
+        }
     }
             //  Car search methods and functions :
 
     public function idSearchCar($id)
     {
         //
-        return Car::where("id","=",$id)->with('iamages')->with('carName',function($var){
+        $car= Car::where("id","=",$id)->with('iamages')->with('carName',function($var){
             $var->select('id','name');
         })->with('vendor',function($var){
 
             $var->select('id','first_name','last_name');
         })->get();
+
+        if($car)
+        return response()->json(['message'=>'succful','data'=>$car]);
+        else
+        return response()->json(['error'=>'car not found','message'=>'fault']);
+
     }
 
 
@@ -62,53 +70,70 @@ class CarController extends Controller
     {
         //update
         $GLOBALS['name']=$name;
-        return Car::query()->whereHas('carName',function($var){
-
+        $car =Car::query()->whereHas('carName',function($var){
             $var->where("name", "like", "%" .  $GLOBALS['name'] . "%");
         }
         )->with('carName',function($var){
-
             $var->select('id','name');
         })->with('vendor',function($var){
-
             $var->select('id','first_name','last_name');
         })->with('iamages')->get();
+
+        if($car)
+        return response()->json(['message'=>'succful','data'=>$car]);
+        else
+        return response()->json(['error'=>'car not found','message'=>'fault']);
     }
 
     public function modelSearchCar($model)
     {
         //
-        return Car::where("model", "like", "%" . $model . "%")->with('carName',function($var){
+        $car= Car::where("model", "like", "%" . $model . "%")->with('carName',function($var){
 
             $var->select('id','name');
         })->with('vendor',function($var){
 
             $var->select('id','first_name','last_name');
         })->with('iamages')->get();
+
+        if($car)
+        return response()->json(['message'=>'succful','data'=>$car]);
+        else
+        return response()->json(['error'=>'car not found','message'=>'fault']);
     }
 
     public function colorSearchCar($color)
     {
         //
-        return Car::where("color", "like", "%" . $color . "%")->with('carName',function($var){
+        $car= Car::where("color", "like", "%" . $color . "%")->with('carName',function($var){
 
             $var->select('id','name');
         })->with('vendor',function($var){
 
             $var->select('id','first_name','last_name');
         })->with('iamages')->get();
+
+        if($car)
+        return response()->json(['message'=>'succful','data'=>$car]);
+        else
+        return response()->json(['error'=>'car not found','message'=>'fault']);
     }
 
     public function descriptionSearchCar($description)
     {
         //
-        return Car::where("description", "like", "%" . $description . "%")->with('carName',function($var){
+        $car= Car::where("description", "like", "%" . $description . "%")->with('carName',function($var){
 
             $var->select('id','name');
         })->with('vendor',function($var){
 
             $var->select('id','first_name','last_name');
         })->with('iamages')->get();
+
+        if($car)
+        return response()->json(['message'=>'succful','data'=>$car]);
+        else
+        return response()->json(['error'=>'car not found','message'=>'fault']);
     }
 
 }

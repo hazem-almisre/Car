@@ -18,13 +18,11 @@ class Like extends Model
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-
+    protected $fillable = [
         'user_id',
         'car_id',
-
     ];
-
+    
 
 
     /**
